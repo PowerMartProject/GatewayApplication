@@ -1,0 +1,43 @@
+server:
+  port: 8000
+  
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: USERMANAGEMENT
+          uri: lb://USERMANAGEMENT
+          predicates:
+          - Path=/user/**
+          filters:
+            - JwtAuthenticationFilter
+          
+        - id: AUTHENTICATIONSERVICE
+          uri: lb://AUTHENTICATIONSERVICE
+          predicates:
+          - Path=/auth/**
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            exposedHeaders:
+              - "*"
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+
+
+          
+  
+  
